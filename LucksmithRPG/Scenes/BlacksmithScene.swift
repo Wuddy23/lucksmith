@@ -217,8 +217,13 @@ class BlacksmithScene: SKScene {
     private func showItemResult(_ item: Equipment) {
         resultPanel?.removeFromParent()
 
-        let panelHeight: CGFloat = 200
-        let panel = SKShapeNode(rectOf: CGSize(width: size.width - 40, height: panelHeight), cornerRadius: 16)
+        let equipped  = gm.player.equipped(slot: item.slot)
+        let statRows  = buildStatRows(item: item, equipped: equipped)
+        let panelW    = size.width - 40
+        let rowH: CGFloat  = 17
+        let panelHeight: CGFloat = 188 + CGFloat(statRows.count) * rowH
+
+        let panel = SKShapeNode(rectOf: CGSize(width: panelW, height: panelHeight), cornerRadius: 16)
         panel.fillColor   = SKColor(white: 0.1, alpha: 0.97)
         panel.strokeColor = item.rarity.color
         panel.lineWidth   = item.rarity == .legendary ? 3 : 2
@@ -227,66 +232,101 @@ class BlacksmithScene: SKScene {
         panel.name        = "resultPanel"
         panel.zPosition   = 10
 
-        if item.rarity.glowRadius > 0 {
-            panel.glowWidth = item.rarity.glowRadius
-        }
+        if item.rarity.glowRadius > 0 { panel.glowWidth = item.rarity.glowRadius }
+
+        var curY = panelHeight / 2 - 22
 
         // Rarity badge
         let rarityLbl = SKLabelNode(fontNamed: "AvenirNext-Heavy")
         rarityLbl.text      = "[ \(item.rarity.rawValue.uppercased()) ]"
-        rarityLbl.fontSize  = 16
+        rarityLbl.fontSize  = 15
         rarityLbl.fontColor = item.rarity.color
         rarityLbl.verticalAlignmentMode   = .center
         rarityLbl.horizontalAlignmentMode = .center
-        rarityLbl.position = CGPoint(x: 0, y: panelHeight / 2 - 28)
+        rarityLbl.position = CGPoint(x: 0, y: curY)
         panel.addChild(rarityLbl)
+        curY -= 24
 
         // Item name
         let nameLbl = SKLabelNode(fontNamed: "AvenirNext-Heavy")
         nameLbl.text      = "\(item.slot.icon) \(item.name)"
-        nameLbl.fontSize  = 20
+        nameLbl.fontSize  = 18
         nameLbl.fontColor = .white
         nameLbl.verticalAlignmentMode   = .center
         nameLbl.horizontalAlignmentMode = .center
-        nameLbl.position = CGPoint(x: 0, y: panelHeight / 2 - 60)
+        nameLbl.position = CGPoint(x: 0, y: curY)
         panel.addChild(nameLbl)
+        curY -= 22
 
-        // Stats
-        let statsLbl = SKLabelNode(fontNamed: "AvenirNext-Bold")
-        statsLbl.text      = item.statDescription
-        statsLbl.fontSize  = 13
-        statsLbl.fontColor = SKColor(white: 0.85, alpha: 1)
-        statsLbl.verticalAlignmentMode   = .center
-        statsLbl.horizontalAlignmentMode = .center
-        statsLbl.position = CGPoint(x: 0, y: panelHeight / 2 - 88)
-        panel.addChild(statsLbl)
+        // Column headers
+        if equipped != nil {
+            addForgeHeader("Equipped", x: -28, y: curY, to: panel, panelW: panelW)
+            addForgeHeader("New",      x:  60, y: curY, to: panel, panelW: panelW)
+            addForgeHeader("Change",   x: 130, y: curY, to: panel, panelW: panelW)
+        } else {
+            addForgeHeader("Stats",    x: 0,   y: curY, to: panel, panelW: panelW)
+        }
+        curY -= 4
+
+        // Stat comparison rows
+        let green = SKColor(red: 0.2, green: 0.9, blue: 0.3, alpha: 1)
+        let red   = SKColor(red: 0.95, green: 0.25, blue: 0.2, alpha: 1)
+        let gray  = SKColor(white: 0.5, alpha: 1)
+        for row in statRows {
+            curY -= rowH
+            let diffStr   = row.diff > 0 ? "▲\(row.diffStr)" : row.diff < 0 ? "▼\(row.diffStr)" : "="
+            let diffColor = row.diff > 0 ? green : row.diff < 0 ? red : gray
+
+            let nameLbl = makeForgeLbl(row.label + ":", color: SKColor(white: 0.6, alpha: 1), align: .left)
+            nameLbl.position = CGPoint(x: -panelW / 2 + 12, y: curY)
+            panel.addChild(nameLbl)
+
+            if equipped != nil {
+                let oldLbl = makeForgeLbl(row.oldStr, color: SKColor(white: 0.5, alpha: 1), align: .center)
+                oldLbl.position = CGPoint(x: -panelW / 2 + panelW * 0.38, y: curY)
+                panel.addChild(oldLbl)
+
+                let arrLbl = makeForgeLbl("→", color: gray, align: .center)
+                arrLbl.position = CGPoint(x: -panelW / 2 + panelW * 0.53, y: curY)
+                panel.addChild(arrLbl)
+            }
+
+            let newLbl = makeForgeLbl(row.newStr, color: .white, align: .center)
+            newLbl.position = CGPoint(x: -panelW / 2 + panelW * (equipped != nil ? 0.66 : 0.5), y: curY)
+            panel.addChild(newLbl)
+
+            if equipped != nil {
+                let diffLbl = makeForgeLbl(diffStr, color: diffColor, align: .center)
+                diffLbl.position = CGPoint(x: -panelW / 2 + panelW * 0.84, y: curY)
+                panel.addChild(diffLbl)
+            }
+        }
+        curY -= 14
 
         // Flavor text
         let flavorLbl = SKLabelNode(fontNamed: "AvenirNext-Italic")
         flavorLbl.text      = "\"\(item.flavorText)\""
-        flavorLbl.fontSize  = 11
-        flavorLbl.fontColor = SKColor(white: 0.55, alpha: 1)
+        flavorLbl.fontSize  = 10
+        flavorLbl.fontColor = SKColor(white: 0.5, alpha: 1)
         flavorLbl.verticalAlignmentMode   = .center
         flavorLbl.horizontalAlignmentMode = .center
-        flavorLbl.position = CGPoint(x: 0, y: panelHeight / 2 - 112)
+        flavorLbl.position = CGPoint(x: 0, y: curY)
         panel.addChild(flavorLbl)
 
-        // Equip button
+        // Equip / Store buttons
         let equipBtn = makeSmallButton(text: "✓ Equip", color: SKColor(red: 0.15, green: 0.5, blue: 0.2, alpha: 1))
-        equipBtn.position = CGPoint(x: -65, y: -panelHeight / 2 + 32)
+        equipBtn.position = CGPoint(x: -65, y: -panelHeight / 2 + 30)
         equipBtn.name = "equipBtn_\(item.id.uuidString)"
         panel.addChild(equipBtn)
 
-        // Keep in bag button
         let keepBtn = makeSmallButton(text: "Store", color: SKColor(white: 0.2, alpha: 1))
-        keepBtn.position = CGPoint(x: 65, y: -panelHeight / 2 + 32)
+        keepBtn.position = CGPoint(x: 65, y: -panelHeight / 2 + 30)
         keepBtn.name = "keepBtn"
         panel.addChild(keepBtn)
 
         addChild(panel)
         resultPanel = panel
 
-        // Pop-in animation
         panel.setScale(0.4)
         panel.run(SKAction.sequence([
             SKAction.group([
@@ -296,10 +336,68 @@ class BlacksmithScene: SKScene {
             SKAction.scale(to: 1.0, duration: 0.08),
         ]))
 
-        // Legendary sparkle
-        if item.rarity == .legendary {
-            addLegendarySparkle(at: panel.position)
+        if item.rarity == .legendary { addLegendarySparkle(at: panel.position) }
+    }
+
+    // MARK: - Comparison helpers
+
+    private struct StatRow {
+        let label: String
+        let oldStr: String
+        let newStr: String
+        let diff: Double
+        let diffStr: String
+    }
+
+    private func buildStatRows(item: Equipment, equipped: Equipment?) -> [StatRow] {
+        func fmt(_ v: Double) -> String {
+            v.truncatingRemainder(dividingBy: 1) == 0 ? "+\(Int(v))" : "+\(String(format: "%.1f", v))"
         }
+        func fmtDiff(_ v: Double) -> String {
+            let a = abs(v)
+            return a.truncatingRemainder(dividingBy: 1) == 0 ? "\(Int(a))" : String(format: "%.1f", a)
+        }
+
+        var rows: [StatRow] = []
+        let e = equipped?.stats
+        let n = item.stats
+
+        func row(_ label: String, old: Double, new: Double) {
+            guard old != 0 || new != 0 else { return }
+            rows.append(StatRow(label: label,
+                                oldStr: old > 0 ? fmt(old) : "—",
+                                newStr: new > 0 ? fmt(new) : "—",
+                                diff: new - old,
+                                diffStr: fmtDiff(new - old)))
+        }
+        row("ATK",  old: Double(e?.attack      ?? 0), new: Double(n.attack))
+        row("DEF",  old: Double(e?.defense     ?? 0), new: Double(n.defense))
+        row("HP",   old: Double(e?.maxHP       ?? 0), new: Double(n.maxHP))
+        row("SPD",  old: e?.speed       ?? 0,         new: n.speed)
+        row("ASPD", old: e?.attackSpeed ?? 0,         new: n.attackSpeed)
+        return rows
+    }
+
+    private func addForgeHeader(_ text: String, x: CGFloat, y: CGFloat, to parent: SKNode, panelW: CGFloat) {
+        let lbl = SKLabelNode(fontNamed: "AvenirNext-Bold")
+        lbl.text      = text
+        lbl.fontSize  = 9
+        lbl.fontColor = SKColor(white: 0.45, alpha: 1)
+        lbl.verticalAlignmentMode   = .center
+        lbl.horizontalAlignmentMode = .center
+        lbl.position  = CGPoint(x: x, y: y)
+        parent.addChild(lbl)
+    }
+
+    private func makeForgeLbl(_ text: String, color: SKColor,
+                               align: SKLabelHorizontalAlignmentMode) -> SKLabelNode {
+        let lbl = SKLabelNode(fontNamed: "AvenirNext-Bold")
+        lbl.text      = text
+        lbl.fontSize  = 11
+        lbl.fontColor = color
+        lbl.verticalAlignmentMode   = .center
+        lbl.horizontalAlignmentMode = align
+        return lbl
     }
 
     private func makeSmallButton(text: String, color: SKColor) -> SKNode {
