@@ -67,8 +67,8 @@ class PlayerNode: SKNode {
 
     // MARK: - HP bar
 
-    func updateHP(current: Int, max: Int) {
-        let pct = CGFloat(current) / CGFloat(max)
+    func updateHP(current: Int, maxHP: Int) {
+        let pct = CGFloat(current) / CGFloat(maxHP)
         let newWidth = hpBarWidth * pct
         let newFill  = SKShapeNode(rectOf: CGSize(width: max(0, newWidth), height: 6), cornerRadius: 3)
 

@@ -619,8 +619,9 @@ class GameScene: SKScene {
         let scene = BlacksmithScene(size: size)
         scene.scaleMode = .resizeFill
         scene.onClose = { [weak self] in
-            self?.view?.presentScene(self, transition: SKTransition.push(with: .right, duration: 0.3))
-            self?.refreshHUD()
+            guard let self = self else { return }
+            self.view?.presentScene(self, transition: SKTransition.push(with: .right, duration: 0.3))
+            self.refreshHUD()
         }
         view?.presentScene(scene, transition: SKTransition.push(with: .left, duration: 0.3))
     }
@@ -630,8 +631,9 @@ class GameScene: SKScene {
         let scene = InventoryScene(size: size)
         scene.scaleMode = .resizeFill
         scene.onClose = { [weak self] in
-            self?.view?.presentScene(self, transition: SKTransition.push(with: .right, duration: 0.3))
-            self?.refreshHUD()
+            guard let self = self else { return }
+            self.view?.presentScene(self, transition: SKTransition.push(with: .right, duration: 0.3))
+            self.refreshHUD()
         }
         view?.presentScene(scene, transition: SKTransition.push(with: .left, duration: 0.3))
     }
@@ -648,7 +650,7 @@ class GameScene: SKScene {
 
     private func refreshHPBar() {
         hud.updateHP(current: pd.currentHP, max: pd.totalMaxHP)
-        playerNode.updateHP(current: pd.currentHP, max: pd.totalMaxHP)
+        playerNode.updateHP(current: pd.currentHP, maxHP: pd.totalMaxHP)
     }
 
     // MARK: - Nearest enemy helper
