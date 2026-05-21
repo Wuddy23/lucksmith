@@ -709,8 +709,6 @@ class GameScene: SKScene {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let touch = touches.first else { return }
         let hudPoint   = touch.location(in: cameraNode)
-        let worldPoint = touch.location(in: worldNode)
-
         // HUD buttons
         hud.handleTouch(at: hudPoint)
 
