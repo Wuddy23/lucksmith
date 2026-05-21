@@ -313,16 +313,22 @@ class BlacksmithScene: SKScene {
         flavorLbl.position = CGPoint(x: 0, y: curY)
         panel.addChild(flavorLbl)
 
-        // Equip / Store buttons
+        // Equip / Store / Recycle buttons
+        let btnY = -panelHeight / 2 + 30
         let equipBtn = makeSmallButton(text: "✓ Equip", color: SKColor(red: 0.15, green: 0.5, blue: 0.2, alpha: 1))
-        equipBtn.position = CGPoint(x: -65, y: -panelHeight / 2 + 30)
+        equipBtn.position = CGPoint(x: -panelW / 2 + 56, y: btnY)
         equipBtn.name = "equipBtn_\(item.id.uuidString)"
         panel.addChild(equipBtn)
 
         let keepBtn = makeSmallButton(text: "Store", color: SKColor(white: 0.2, alpha: 1))
-        keepBtn.position = CGPoint(x: 65, y: -panelHeight / 2 + 30)
+        keepBtn.position = CGPoint(x: 0, y: btnY)
         keepBtn.name = "keepBtn"
         panel.addChild(keepBtn)
+
+        let recycleBtn = makeSmallButton(text: "♻ Recycle", color: SKColor(red: 0.45, green: 0.22, blue: 0.04, alpha: 1))
+        recycleBtn.position = CGPoint(x: panelW / 2 - 56, y: btnY)
+        recycleBtn.name = "recycleForge_\(item.id.uuidString)"
+        panel.addChild(recycleBtn)
 
         addChild(panel)
         resultPanel = panel
@@ -496,10 +502,29 @@ class BlacksmithScene: SKScene {
                         SKAction.removeFromParent(),
                     ]))
                     resultPanel = nil
-                    let equipped = FloatingTextNode(text: "Equipped!", color: SKColor(red: 0.2, green: 0.9, blue: 0.3, alpha: 1))
-                    equipped.position = CGPoint(x: 0, y: 60)
-                    addChild(equipped)
-                    equipped.animate()
+                    let floater = FloatingTextNode(text: "Equipped!", color: SKColor(red: 0.2, green: 0.9, blue: 0.3, alpha: 1))
+                    floater.position = CGPoint(x: 0, y: 60)
+                    addChild(floater)
+                    floater.animate()
+                }
+                return
+            }
+            if name.hasPrefix("recycleForge_") {
+                let idStr = String(name.dropFirst("recycleForge_".count))
+                if let item = pd.inventory.first(where: { $0.id.uuidString == idStr }) {
+                    let reward = pd.salvage(item)
+                    gm.save()
+                    resultPanel?.run(SKAction.sequence([
+                        SKAction.fadeOut(withDuration: 0.15),
+                        SKAction.removeFromParent(),
+                    ]))
+                    resultPanel = nil
+                    updateLabels()
+                    let msg = reward.gold > 0 ? "+⚙️\(reward.metal)  +🪙\(reward.gold)" : "+⚙️\(reward.metal)"
+                    let floater = FloatingTextNode(text: msg, color: SKColor(red: 0.7, green: 0.85, blue: 0.4, alpha: 1))
+                    floater.position = CGPoint(x: 0, y: 60)
+                    addChild(floater)
+                    floater.animate(riseDistance: 40, duration: 1.0)
                 }
                 return
             }
