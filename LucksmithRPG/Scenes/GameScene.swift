@@ -627,9 +627,8 @@ class GameScene: SKScene {
         guard gm.state == .playing, let skView = view else { return }
         let scene = BlacksmithScene(size: size)
         scene.scaleMode = .resizeFill
-        scene.onClose = { [weak self, weak skView] in
-            guard let self = self, let skView = skView else { return }
-            skView.presentScene(self, transition: SKTransition.push(with: .right, duration: 0.3))
+        scene.onClose = { [weak skView] in
+            skView?.presentScene(self, transition: SKTransition.push(with: .right, duration: 0.3))
             self.refreshHUD()
         }
         skView.presentScene(scene, transition: SKTransition.push(with: .left, duration: 0.3))
@@ -639,9 +638,8 @@ class GameScene: SKScene {
         guard gm.state == .playing, let skView = view else { return }
         let scene = InventoryScene(size: size)
         scene.scaleMode = .resizeFill
-        scene.onClose = { [weak self, weak skView] in
-            guard let self = self, let skView = skView else { return }
-            skView.presentScene(self, transition: SKTransition.push(with: .right, duration: 0.3))
+        scene.onClose = { [weak skView] in
+            skView?.presentScene(self, transition: SKTransition.push(with: .right, duration: 0.3))
             self.refreshHUD()
         }
         skView.presentScene(scene, transition: SKTransition.push(with: .left, duration: 0.3))
