@@ -71,6 +71,13 @@ class GameScene: SKScene {
                                                name: GameManager.stateChanged, object: nil)
     }
 
+    override func didChangeSize(_ oldSize: CGSize) {
+        super.didChangeSize(oldSize)
+        if size.width > 0 && size.height > 0 {
+            setupHUD()
+        }
+    }
+
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
