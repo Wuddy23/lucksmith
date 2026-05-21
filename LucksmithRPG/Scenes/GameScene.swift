@@ -624,27 +624,27 @@ class GameScene: SKScene {
     // MARK: - Overlays: Blacksmith & Inventory
 
     private func openBlacksmith() {
-        guard gm.state == .playing else { return }
+        guard gm.state == .playing, let skView = view else { return }
         let scene = BlacksmithScene(size: size)
         scene.scaleMode = .resizeFill
-        scene.onClose = { [weak self] in
-            guard let self = self else { return }
-            self.view?.presentScene(self, transition: SKTransition.push(with: .right, duration: 0.3))
+        scene.onClose = { [weak self, weak skView] in
+            guard let self = self, let skView = skView else { return }
+            skView.presentScene(self, transition: SKTransition.push(with: .right, duration: 0.3))
             self.refreshHUD()
         }
-        view?.presentScene(scene, transition: SKTransition.push(with: .left, duration: 0.3))
+        skView.presentScene(scene, transition: SKTransition.push(with: .left, duration: 0.3))
     }
 
     private func openInventory() {
-        guard gm.state == .playing else { return }
+        guard gm.state == .playing, let skView = view else { return }
         let scene = InventoryScene(size: size)
         scene.scaleMode = .resizeFill
-        scene.onClose = { [weak self] in
-            guard let self = self else { return }
-            self.view?.presentScene(self, transition: SKTransition.push(with: .right, duration: 0.3))
+        scene.onClose = { [weak self, weak skView] in
+            guard let self = self, let skView = skView else { return }
+            skView.presentScene(self, transition: SKTransition.push(with: .right, duration: 0.3))
             self.refreshHUD()
         }
-        view?.presentScene(scene, transition: SKTransition.push(with: .left, duration: 0.3))
+        skView.presentScene(scene, transition: SKTransition.push(with: .left, duration: 0.3))
     }
 
     // MARK: - HUD helpers
