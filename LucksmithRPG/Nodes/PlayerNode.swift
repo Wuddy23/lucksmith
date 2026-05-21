@@ -7,12 +7,14 @@ class PlayerNode: SKNode {
     private let head:      SKShapeNode
     private let hpBarBG:   SKShapeNode
     private let hpBarFill: SKShapeNode
-    private let label:     SKLabelNode
+    private let sword      = SKNode()
 
     private let bodyWidth:  CGFloat = 28
     private let bodyHeight: CGFloat = 36
     private let headRadius: CGFloat = 12
     private let hpBarWidth: CGFloat = 50
+
+    private let swordRestAngle: CGFloat = -.pi / 6
 
     // Combat timers (managed by GameScene)
     var attackCooldown: Double = 0
@@ -33,13 +35,6 @@ class PlayerNode: SKNode {
         head.lineWidth   = 2
         head.position    = CGPoint(x: 0, y: bodyHeight + headRadius)
 
-        // Emoji label on body
-        label = SKLabelNode(text: "🗡")
-        label.fontSize = 16
-        label.verticalAlignmentMode   = .center
-        label.horizontalAlignmentMode = .center
-        label.position = CGPoint(x: 0, y: bodyHeight / 2)
-
         // HP bar background
         hpBarBG = SKShapeNode(rectOf: CGSize(width: hpBarWidth, height: 6), cornerRadius: 3)
         hpBarBG.fillColor   = SKColor(red: 0.3, green: 0.1, blue: 0.1, alpha: 0.8)
@@ -58,12 +53,46 @@ class PlayerNode: SKNode {
         addChild(hpBarFill)
         addChild(body)
         addChild(head)
-        addChild(label)
+        buildSword()
 
         startIdleAnimation()
     }
 
     required init?(coder: NSCoder) { fatalError() }
+
+    // MARK: - Sword
+
+    private func buildSword() {
+        // Blade
+        let blade = SKShapeNode(rectOf: CGSize(width: 4, height: 20), cornerRadius: 1)
+        blade.fillColor   = SKColor(red: 0.78, green: 0.84, blue: 0.95, alpha: 1)
+        blade.strokeColor = SKColor(red: 0.5, green: 0.56, blue: 0.72, alpha: 1)
+        blade.lineWidth   = 1
+        blade.position    = CGPoint(x: 0, y: 12)
+
+        // Crossguard
+        let crossguard = SKShapeNode(rectOf: CGSize(width: 11, height: 3), cornerRadius: 1)
+        crossguard.fillColor   = SKColor(red: 0.75, green: 0.62, blue: 0.22, alpha: 1)
+        crossguard.strokeColor = SKColor(red: 0.52, green: 0.42, blue: 0.12, alpha: 1)
+        crossguard.lineWidth   = 1
+        crossguard.position    = CGPoint(x: 0, y: 3)
+
+        // Handle
+        let handle = SKShapeNode(rectOf: CGSize(width: 3, height: 7), cornerRadius: 1)
+        handle.fillColor   = SKColor(red: 0.48, green: 0.28, blue: 0.12, alpha: 1)
+        handle.strokeColor = SKColor(red: 0.32, green: 0.18, blue: 0.08, alpha: 1)
+        handle.lineWidth   = 0.5
+        handle.position    = CGPoint(x: 0, y: -2)
+
+        sword.addChild(blade)
+        sword.addChild(crossguard)
+        sword.addChild(handle)
+
+        // Position at player's right hand, mid-body height
+        sword.position  = CGPoint(x: bodyWidth / 2 + 2, y: bodyHeight * 0.4)
+        sword.zRotation = swordRestAngle
+        addChild(sword)
+    }
 
     // MARK: - HP bar
 
@@ -94,12 +123,21 @@ class PlayerNode: SKNode {
     }
 
     func playAttackAnimation(toward direction: CGFloat) {
+        // Lunge forward
         let lunge = SKAction.sequence([
             SKAction.moveBy(x: direction * 20, y: 0, duration: 0.12),
             SKAction.moveBy(x: direction * -20, y: 0, duration: 0.1),
         ])
         run(lunge)
 
+        // Sword swing: wind-up → slash → return to rest
+        // xScale handles mirroring when facing left, so rotation values are the same
+        let windUp = SKAction.rotate(toAngle: .pi / 5,      duration: 0.07, shortestUnitArc: true)
+        let slash  = SKAction.rotate(toAngle: -.pi * 0.72,  duration: 0.09, shortestUnitArc: true)
+        let ret    = SKAction.rotate(toAngle: swordRestAngle, duration: 0.11, shortestUnitArc: true)
+        sword.run(SKAction.sequence([windUp, slash, ret]))
+
+        // Body flash
         let flash = SKAction.sequence([
             SKAction.colorize(with: .white, colorBlendFactor: 0.8, duration: 0.06),
             SKAction.colorize(with: .clear, colorBlendFactor: 0, duration: 0.06),

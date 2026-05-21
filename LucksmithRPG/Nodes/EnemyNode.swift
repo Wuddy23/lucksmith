@@ -150,9 +150,13 @@ class EnemyNode: SKNode {
             SKAction.removeFromParent(),
         ])
         body.run(explode)
-        label.run(SKAction.sequence([
+        let fadeOut = SKAction.sequence([
             SKAction.wait(forDuration: 0.15),
             SKAction.fadeOut(withDuration: 0.2),
-        ]))
+        ])
+        label.run(fadeOut)
+        nameLabel.run(fadeOut.copy() as! SKAction)
+        hpBarBG.run(fadeOut.copy() as! SKAction)
+        hpBarFill.run(fadeOut.copy() as! SKAction)
     }
 }

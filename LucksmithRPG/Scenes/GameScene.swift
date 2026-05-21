@@ -551,58 +551,50 @@ class GameScene: SKScene {
         playerState = .dead
         playerNode.playDeathAnimation { }
         gm.handlePlayerDeath()
-        showDeathOverlay()
-    }
 
-    private func showDeathOverlay() {
+        // Dim the screen
         let overlay = SKShapeNode(rectOf: size)
-        overlay.fillColor   = SKColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.0)
+        overlay.fillColor   = SKColor(red: 0, green: 0, blue: 0, alpha: 0)
         overlay.strokeColor = .clear
-        overlay.position    = .zero
         overlay.zPosition   = 100
         cameraNode.addChild(overlay)
-
         overlay.run(SKAction.sequence([
             SKAction.wait(forDuration: 0.3),
             SKAction.fadeAlpha(to: 0.65, duration: 0.4),
         ]))
 
-        // Death title
+        // "YOU DIED" flash
         let deathLabel = SKLabelNode(fontNamed: "AvenirNext-Heavy")
         deathLabel.text      = "YOU DIED"
         deathLabel.fontSize  = 42
         deathLabel.fontColor = SKColor(red: 0.9, green: 0.1, blue: 0.1, alpha: 1)
         deathLabel.verticalAlignmentMode   = .center
         deathLabel.horizontalAlignmentMode = .center
-        deathLabel.position = CGPoint(x: 0, y: 60)
         deathLabel.zPosition = 101
         deathLabel.alpha = 0
         cameraNode.addChild(deathLabel)
         deathLabel.run(SKAction.sequence([
             SKAction.wait(forDuration: 0.5),
             SKAction.fadeIn(withDuration: 0.3),
+            SKAction.wait(forDuration: 0.8),
+            SKAction.fadeOut(withDuration: 0.3),
         ]))
 
-        // Revive button
-        let reviveCost = gm.currentFloor * 20
-        let reviveBtn  = makeOverlayButton(text: "Revive (🪙 \(reviveCost))", y: -20, color: SKColor(red: 0.2, green: 0.6, blue: 0.2, alpha: 1))
-        reviveBtn.zPosition = 101
-        reviveBtn.alpha = 0
-        reviveBtn.name = "reviveBtn_\(reviveCost)"
-        cameraNode.addChild(reviveBtn)
+        // Auto-revive after the "YOU DIED" moment
+        run(SKAction.sequence([
+            SKAction.wait(forDuration: 2.1),
+            SKAction.run { [weak self] in self?.autoRevive() },
+        ]))
+    }
 
-        let restartBtn = makeOverlayButton(text: "Restart Floor 1", y: -75, color: SKColor(red: 0.5, green: 0.15, blue: 0.15, alpha: 1))
-        restartBtn.zPosition = 101
-        restartBtn.alpha = 0
-        restartBtn.name = "restartBtn"
-        cameraNode.addChild(restartBtn)
-
-        let showAction = SKAction.sequence([
-            SKAction.wait(forDuration: 0.7),
-            SKAction.fadeIn(withDuration: 0.3),
-        ])
-        reviveBtn.run(showAction)
-        restartBtn.run(showAction.copy() as! SKAction)
+    private func autoRevive() {
+        pd.fullHeal()
+        gm.setState(.playing)
+        playerState = .walkingToEnemy
+        cameraNode.removeAllChildren()
+        setupHUD()
+        refreshHUD()
+        spawnFloor()
     }
 
     private func makeOverlayButton(text: String, y: CGFloat, color: SKColor) -> SKNode {
@@ -724,31 +716,13 @@ class GameScene: SKScene {
         // HUD buttons
         hud.handleTouch(at: hudPoint)
 
-        // Death / overlay buttons
+        // Overlay buttons (continue after castle clear)
         let nodes = cameraNode.nodes(at: hudPoint)
         for node in nodes {
             guard let name = node.parent?.name ?? node.name else { continue }
-            if name.hasPrefix("reviveBtn_") {
-                let cost = Int(name.split(separator: "_").last ?? "0") ?? 0
-                handleRevive(cost: cost)
-            } else if name == "restartBtn" {
-                handleRestart()
-            } else if name == "continueBtn" {
+            if name == "continueBtn" {
                 handleContinue()
             }
-        }
-    }
-
-    private func handleRevive(cost: Int) {
-        if pd.gold >= cost {
-            pd.gold -= cost
-            pd.fullHeal()
-            gm.setState(.playing)
-            playerState = .walkingToEnemy
-            cameraNode.removeAllChildren()
-            setupHUD()
-            refreshHUD()
-            spawnFloor()
         }
     }
 
