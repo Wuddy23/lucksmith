@@ -20,8 +20,6 @@
     <string>1</string>
     <key>LSRequiresIPhoneOS</key>
     <true/>
-    <key>NSPrincipalClass</key>
-    <string>AppDelegate</string>
     <key>UIApplicationSceneManifest</key>
     <dict>
         <key>UIApplicationSupportsMultipleScenes</key>
@@ -41,8 +39,5 @@
     <true/>
     <key>UIViewControllerBasedStatusBarAppearance</key>
     <false/>
-    <!-- SpriteKit: use SKView as the root view -->
-    <key>NSPrincipalClass</key>
-    <string>AppDelegate</string>
 </dict>
 </plist>
