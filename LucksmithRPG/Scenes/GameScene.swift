@@ -25,6 +25,8 @@ private enum PlayerState {
 
 class GameScene: SKScene {
 
+    private var didSetup = false
+
     // ── World ─────────────────────────────────────────────────────────────────
     private let worldNode   = SKNode()
     private let cameraNode  = SKCameraNode()
@@ -63,14 +65,17 @@ class GameScene: SKScene {
         backgroundColor = SKColor(red: 0.07, green: 0.06, blue: 0.12, alpha: 1)
         physicsWorld.gravity = .zero
 
-        setupCamera()
-        setupWorld()
-        spawnFloor()
-        setupHUD()
-        refreshHUD()
+        if !didSetup {
+            didSetup = true
+            setupCamera()
+            setupWorld()
+            spawnFloor()
+            setupHUD()
+            NotificationCenter.default.addObserver(self, selector: #selector(onStateChanged),
+                                                   name: GameManager.stateChanged, object: nil)
+        }
 
-        NotificationCenter.default.addObserver(self, selector: #selector(onStateChanged),
-                                               name: GameManager.stateChanged, object: nil)
+        refreshHUD()
     }
 
     override func didChangeSize(_ oldSize: CGSize) {
