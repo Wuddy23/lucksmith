@@ -74,7 +74,7 @@ class GameScene: SKScene {
     override func didChangeSize(_ oldSize: CGSize) {
         super.didChangeSize(oldSize)
         if size.width > 0 && size.height > 0 {
-            setupHUD()
+            hud.layout(size: size)
         }
     }
 
