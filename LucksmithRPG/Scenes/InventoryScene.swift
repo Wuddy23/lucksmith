@@ -17,6 +17,8 @@ class InventoryScene: SKScene {
     private let panelTop:  CGFloat  = 320   // y in scene coords from center
 
     override func didMove(to view: SKView) {
+        size = view.frame.size
+        anchorPoint = CGPoint(x: 0.5, y: 0.5)
         backgroundColor = SKColor(red: 0.06, green: 0.06, blue: 0.1, alpha: 1)
         buildEquippedPanel()
         buildInventoryList()

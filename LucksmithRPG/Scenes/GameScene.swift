@@ -58,6 +58,8 @@ class GameScene: SKScene {
     // MARK: - Scene lifecycle
 
     override func didMove(to view: SKView) {
+        size = view.frame.size
+        anchorPoint = CGPoint(x: 0.5, y: 0.5)
         backgroundColor = SKColor(red: 0.07, green: 0.06, blue: 0.12, alpha: 1)
         physicsWorld.gravity = .zero
 

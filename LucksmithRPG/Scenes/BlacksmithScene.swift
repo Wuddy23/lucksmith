@@ -15,6 +15,8 @@ class BlacksmithScene: SKScene {
     private var isForging       = false
 
     override func didMove(to view: SKView) {
+        size = view.frame.size
+        anchorPoint = CGPoint(x: 0.5, y: 0.5)
         backgroundColor = SKColor(red: 0.1, green: 0.07, blue: 0.05, alpha: 1)
         buildUI()
     }
