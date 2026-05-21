@@ -1,5 +1,6 @@
 import UIKit
 
+@objc(LucksmithAppDelegate)
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
