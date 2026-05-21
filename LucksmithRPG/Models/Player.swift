@@ -136,17 +136,19 @@ class PlayerData: Codable {
 
     @discardableResult
     func salvage(_ item: Equipment) -> (metal: Int, gold: Int) {
-        let reward: (metal: Int, gold: Int) = switch item.rarity {
-        case .common:    (1,  0)
-        case .uncommon:  (3,  0)
-        case .rare:      (5,  10)
-        case .epic:      (8,  25)
-        case .legendary: (15, 75)
+        let m: Int
+        let g: Int
+        switch item.rarity {
+        case .common:    m = 1;  g = 0
+        case .uncommon:  m = 3;  g = 0
+        case .rare:      m = 5;  g = 10
+        case .epic:      m = 8;  g = 25
+        case .legendary: m = 15; g = 75
         }
         inventory.removeAll { $0.id == item.id }
-        metal += reward.metal
-        gold  += reward.gold
-        return reward
+        metal += m
+        gold  += g
+        return (m, g)
     }
 
     // MARK: - Leveling
