@@ -3,9 +3,13 @@ import SpriteKit
 
 class GameViewController: UIViewController {
 
+    override func loadView() {
+        self.view = SKView()
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        guard let skView = view as? SKView else { return }
+        let skView = view as! SKView
 
         let scene = GameScene()
         scene.scaleMode = .resizeFill
