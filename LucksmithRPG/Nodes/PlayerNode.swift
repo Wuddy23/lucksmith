@@ -6,7 +6,7 @@ class PlayerNode: SKNode {
     private let body:      SKShapeNode
     private let head:      SKShapeNode
     private let hpBarBG:   SKShapeNode
-    private let hpBarFill: SKShapeNode
+    private var hpBarFill: SKShapeNode
     private let sword      = SKNode()
 
     private let bodyWidth:  CGFloat = 28
@@ -108,7 +108,8 @@ class PlayerNode: SKNode {
         newFill.position    = CGPoint(x: -(hpBarWidth - newWidth) / 2, y: hpBarFill.position.y)
 
         hpBarFill.removeFromParent()
-        addChild(newFill)
+        hpBarFill = newFill
+        addChild(hpBarFill)
     }
 
     // MARK: - Animations

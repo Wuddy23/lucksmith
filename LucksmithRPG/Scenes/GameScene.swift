@@ -81,7 +81,8 @@ class GameScene: SKScene {
     override func didChangeSize(_ oldSize: CGSize) {
         super.didChangeSize(oldSize)
         if size.width > 0 && size.height > 0 {
-            hud.layout(size: size)
+            hud.layout(size: size, safeTop: view?.safeAreaInsets.top ?? 0,
+                       safeBottom: view?.safeAreaInsets.bottom ?? 0)
         }
     }
 
@@ -101,7 +102,8 @@ class GameScene: SKScene {
     }
 
     private func setupHUD() {
-        hud.layout(size: size)
+        hud.layout(size: size, safeTop: view?.safeAreaInsets.top ?? 0,
+                   safeBottom: view?.safeAreaInsets.bottom ?? 0)
         hud.onBlacksmith = { [weak self] in self?.openBlacksmith() }
         hud.onInventory  = { [weak self] in self?.openInventory()  }
         cameraNode.addChild(hud)

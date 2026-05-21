@@ -28,12 +28,12 @@ class HUDNode: SKNode {
 
     required init?(coder: NSCoder) { fatalError() }
 
-    func layout(size: CGSize) {
+    func layout(size: CGSize, safeTop: CGFloat = 0, safeBottom: CGFloat = 0) {
         removeAllChildren()
         hpBarWidth = size.width * 0.55
 
-        let topY    = size.height / 2 - 30
-        let bottomY = -size.height / 2 + 22
+        let topY    = size.height / 2 - max(30, safeTop + 12)
+        let bottomY = -(size.height / 2 - max(28, safeBottom + 14))
         let pad: CGFloat = 14
 
         // ── HP Bar ────────────────────────────────────────────────────────────
