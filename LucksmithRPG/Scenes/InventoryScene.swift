@@ -320,7 +320,7 @@ class InventoryScene: SKScene {
         let red   = SKColor(red: 0.95, green: 0.25, blue: 0.2, alpha: 1)
         let gray  = SKColor(white: 0.5, alpha: 1)
 
-        func lbl(_ text: String, color: SKColor, align: SKLabelHorizontalAlignmentMode, px: CGFloat) -> SKLabelNode {
+        func lbl(_ text: String, _ color: SKColor, _ align: SKLabelHorizontalAlignmentMode, _ px: CGFloat) -> SKLabelNode {
             let l = SKLabelNode(fontNamed: "AvenirNext-Bold")
             l.text = text; l.fontSize = 10; l.fontColor = color
             l.verticalAlignmentMode = .center

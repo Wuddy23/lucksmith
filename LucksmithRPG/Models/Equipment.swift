@@ -3,7 +3,7 @@ import SpriteKit
 
 // MARK: - Stats
 
-struct EquipmentStats: Codable {
+struct EquipmentStats: Codable, Equatable {
     var attack: Int
     var defense: Int
     var maxHP: Int
