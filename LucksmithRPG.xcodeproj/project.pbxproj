@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B6A49C2E1B4D5A8F3C7E9046 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6A49C2E1B4D5A8F3C7E9047 /* main.swift */; };
 		B6A49C2E1B4D5A8F3C7E9026 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6A49C2E1B4D5A8F3C7E9025 /* AppDelegate.swift */; };
 		B6A49C2E1B4D5A8F3C7E9028 /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6A49C2E1B4D5A8F3C7E9027 /* GameView.swift */; };
 		B6A49C2E1B4D5A8F3C7E902A /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6A49C2E1B4D5A8F3C7E9029 /* GameViewController.swift */; };
@@ -27,6 +28,7 @@
 
 /* Begin PBXFileReference section */
 		B6A49C2E1B4D5A8F3C7E901F /* LucksmithRPG.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LucksmithRPG.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B6A49C2E1B4D5A8F3C7E9047 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		B6A49C2E1B4D5A8F3C7E9025 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B6A49C2E1B4D5A8F3C7E9027 /* GameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
 		B6A49C2E1B4D5A8F3C7E9029 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
@@ -77,7 +79,8 @@
 		B6A49C2E1B4D5A8F3C7E9020 /* LucksmithRPG */ = {
 			isa = PBXGroup;
 			children = (
-				B6A49C2E1B4D5A8F3C7E9025 /* AppDelegate.swift */,
+				B6A49C2E1B4D5A8F3C7E9047 /* main.swift */,
+			B6A49C2E1B4D5A8F3C7E9025 /* AppDelegate.swift */,
 				B6A49C2E1B4D5A8F3C7E9027 /* GameView.swift */,
 				B6A49C2E1B4D5A8F3C7E9029 /* GameViewController.swift */,
 				B6A49C2E1B4D5A8F3C7E902B /* Info.plist */,
@@ -197,7 +200,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B6A49C2E1B4D5A8F3C7E9026 /* AppDelegate.swift in Sources */,
+				B6A49C2E1B4D5A8F3C7E9046 /* main.swift in Sources */,
+			B6A49C2E1B4D5A8F3C7E9026 /* AppDelegate.swift in Sources */,
 				B6A49C2E1B4D5A8F3C7E9028 /* GameView.swift in Sources */,
 				B6A49C2E1B4D5A8F3C7E902A /* GameViewController.swift in Sources */,
 				B6A49C2E1B4D5A8F3C7E902D /* Enemy.swift in Sources */,

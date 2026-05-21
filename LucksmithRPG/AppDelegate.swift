@@ -1,7 +1,5 @@
 import UIKit
 
-@main
-@objc(AppDelegate)
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
